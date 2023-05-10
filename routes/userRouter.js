@@ -1,9 +1,13 @@
-const Router = require("express").Router();
+const userRouter = require("express").Router();
 const user = require("../controllers/userController");
+const upload = require('../middleware/multer')
+const validate = require('../validator/userValidate/userValidate')
 
-Router.post("/signup", user.signUp);
-Router.post("/login", user.logIn);
+userRouter.post("/signup", upload.single('profilePic'), validate.singUpValidation, user.signUp);
+userRouter.post("/login", validate.logInValidation, user.logIn);
+userRouter.post("/forgotpassword", user.forgotPassword);
+userRouter.post("/resetpassword/:id/:token", user.resetPassword);
 
 
 
-module.exports = Router;
+module.exports = userRouter;

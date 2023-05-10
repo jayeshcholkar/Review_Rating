@@ -15,16 +15,16 @@ const companySchema = new mongoose.Schema(
       required: true,
     },
     companyCity: {
-      type: String,
+      type : String,
       required: true,
     },
-    //  companyPic :{
-    //  type : String,
-    //  required : true,
-    // },
+     companyPic :{
+     type : String,
+     required : true,
+    },
     userId: {
       type: mongoose.Types.ObjectId,
-      // required: true,
+      required: true,
       ref: "userData",
     },
     isActive: {

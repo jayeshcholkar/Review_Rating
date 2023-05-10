@@ -3,11 +3,14 @@ import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import ForgetPass from "./ForgetPass";
 
 function UserLogin() {
   const navigate = useNavigate();
   const [user, setUser] = useState(false);
   const [userError, setUserError] = useState();
+  const [open, setOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -17,7 +20,7 @@ function UserLogin() {
     axios
       .post("http://localhost:9000/login", data)
       .then((response) => {
-        console.log(response.data.success);
+        localStorage.setItem("user", response.data.token);
         setUser(response.data.success);
       })
       .catch((error) => {
@@ -26,12 +29,13 @@ function UserLogin() {
       });
   };
   if (user === true) {
-    navigate("/hero");
+    navigate("/home");
   }
   // console.log(data)};
   console.log(errors);
   return (
-    <div className="max-sm:h-[130vh] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+    <div className="max-sm:h-[130vh] bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500">
+      <ForgetPass setOpen={setOpen} open={open} />
       <section className="h-screen ">
         <div className="g-6 flex h-full flex-wrap items-center justify-center lg:justify-between mx-10">
           <div className="shrink-1 mb-12 grow-0 basis-auto md:mb-0 md:w-9/12 md:shrink-0 lg:w-6/12 xl:w-6/12">
@@ -65,11 +69,9 @@ function UserLogin() {
                   {...register("userEmail", { required: true, maxLength: 25 })}
                   type="text"
                   className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none  [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                  // id="exampleFormControlInput2"
                   placeholder="Email address"
                 />
                 <label
-                  // for="exampleFormControlInput2"
                   className="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[2.35rem] peer-focus:scale-[1] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[2.35rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none "
                 >
                   Email address
@@ -81,11 +83,9 @@ function UserLogin() {
                   {...register("userPassword", { required: true })}
                   type="password"
                   className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                  // id="exampleFormControlInput22"
                   placeholder="Password"
                 />
                 <label
-                  // for="exampleFormControlInput22"
                   className="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[2.35rem] peer-focus:scale-[1] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none"
                 >
                   Password
@@ -94,16 +94,19 @@ function UserLogin() {
 
               <div className="mb-6 flex items-center justify-between">
                 <div className="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]"></div>
-                <a href="#!">Forgot password?</a>
+                <h1 className="cursor-pointer" onClick={() => setOpen(true)}>
+                  Forgot password?
+                </h1>
               </div>
 
               <div className="text-center">
                 <button
                   type="submit"
-                  className="p-2 px-8 rounded-md text-white font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-purple-500 hover:to-pink-500"
+                  className="p-2 px-8 rounded-md text-white font-semibold bg-gradient-to-tl from-indigo-600 via-purple-600 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                 >
                   Login
                 </button>
+
                 <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300"></div>
                 <p className="mt-2 mb-0 pt-1 text-sm font-semibold">
                   Don't have an account ?

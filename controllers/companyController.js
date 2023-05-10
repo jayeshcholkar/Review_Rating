@@ -1,4 +1,5 @@
 const companySchema = require("../models/companySchema");
+const cloudinary = require("../middleware/couldinary");
 
 const addCompany = async (req, res) => {
   const companyData = new companySchema(req.body);
@@ -13,27 +14,51 @@ const addCompany = async (req, res) => {
         message: "Company is already registered with this name",
       });
     } else {
-      const company = await companyData.save();
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        public_id: `${companyData._id}_${Date.now()}_CompanyPIC`,
+      });
+      console.log(result);
+      companyData.companyPic = result.url;
+      companyData.userId = req.user._id;
+      await companyData.save();
       res.status(201).json({
         success: true,
         message: "Company is registered successfully",
+        data: companyData,
       });
     }
   } catch (error) {
     res.status(400).json({
       success: false,
-      message: "Error occur " + error,
+      message: `Error occur ${error.message}`,
     });
   }
 };
 
 const companyList = async (req, res) => {
-  const companyListData = await companySchema.find();
-  res.status(200).json({
-    success: true,
-    message: "Company list fetched successfully",
-    data: companyListData,
-  });
+  // console.log(req.query.search);
+  const companyListData = await companySchema
+    .find({
+      $or: [
+        { companyName: { $regex: req.query.search, $options: "i" } },
+        { companyLocation: { $regex: req.query.search, $options: "i" } },
+        { companyCity: { $regex: req.query.search, $options: "i" } },
+      ],
+    })
+    .sort({ companyName: req.query.sorting });
+  try {
+    res.status(201).json({
+      success: true,
+      message: "Company list fetched successfully",
+      data: companyListData,
+      userDetails: req.user,
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: `Error occur ${error.message}`,
+    });
+  }
 };
 
 const updateCompany = async (req, res) => {
@@ -52,49 +77,36 @@ const updateCompany = async (req, res) => {
     }
   } catch (err) {
     res.status(400).json({
-      massage: "Error occur" + err,
+      massage: `Error occur ${err.message}`,
     });
   }
 };
 
 const deleteCompany = async (req, res) => {
   const companyDelete = await companySchema.findByIdAndDelete(req.params.id);
-  if (companyDelete) {
-    res.status(202).json({
-      success: true,
-      message: "Company deleted successfully",
-    });
-  } else {
+  try {
+    if (companyDelete) {
+      res.status(202).json({
+        success: true,
+        message: "Company deleted successfully",
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: "Company not found",
+      });
+    }
+  } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Company not found",
+      message: `Error occur ${error.message}`,
     });
   }
 };
-
-
-const oneCompany = async(req, res) => {
-    // console.log(req.params.id)
-    try {
-    const companyDetails = await companySchema.findById(req.params.id)
-    res.status(202).json({
-        success : true ,
-        message : "Company details fetched successfully",
-        data : companyDetails
-    })
-} catch(error) {
-    res.status(500).json({
-        success : false,
-        message : "Not found " + error
-    })
-}
-}
-
 
 module.exports = {
   addCompany,
   updateCompany,
   companyList,
   deleteCompany,
-  oneCompany
 };

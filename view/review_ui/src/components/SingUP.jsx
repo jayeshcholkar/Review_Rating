@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 function SignUp() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [userError, setUserError] = useState();
   const [user, setUser] = useState(false);
   const {
@@ -14,10 +14,18 @@ function SignUp() {
     formState: { errors },
   } = useForm();
   const onSubmit = (data) => {
+    const formData = new FormData();
+    formData.append("profilePic", data.profilePic[0]);
+    formData.append("phoneNum", data.phoneNum);
+    formData.append("userCity", data.userCity);
+    formData.append("userEmail", data.userEmail);
+    formData.append("userPassword", data.userPassword);
+    formData.append("userState", data.userState);
+    formData.append("userName", data.userName);
     axios
-      .post("http://localhost:9000/signup", data)
+      .post("http://localhost:9000/signup", formData)
       .then((response) => {
-        console.log(response.data.success);
+        console.log(response.data);
         setUser(response.data.success);
       })
       .catch((error) => {
@@ -26,13 +34,13 @@ function SignUp() {
       });
     console.log(data);
   };
-  if(user === true){
-    navigate('/hero')
+  if (user === true) {
+    navigate("/");
   }
   console.log(errors);
 
   return (
-    <div className="max-sm:h-[170vh] h-[140vh] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+    <div className="max-sm:h-[170vh] h-[140vh] bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500">
       <section className="h-screen">
         <div className="g-6 flex h-full flex-wrap items-center justify-center lg:justify-between mx-10">
           <div className="shrink-1 mb-12 grow-0 basis-auto md:mb-0 md:w-9/12 md:shrink-0 lg:w-6/12 xl:w-6/12">
@@ -60,31 +68,24 @@ function SignUp() {
               </div>
 
               <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300"></div>
-              <p className="text-center text-red-600">
-                {userError}
-              </p>
-              <div className="relative mb-6  mt-10" data-te-input-wrapper-init>
+              <p className="text-center text-red-600">{userError}</p>
+              <div className="relative mb-6  mt-10">
                 <input
                   {...register("userName", {})}
                   type="text"
                   className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none  [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                  // id="exampleFormControlInput2"
                   placeholder="Full Name"
                 />
-                <label
-                  // for="exampleFormControlInput2"
-                  className="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[2.35rem] peer-focus:scale-[1] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[2.35rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none"
-                >
+                <label className="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[2.35rem] peer-focus:scale-[1] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[2.35rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none">
                   Full Name
                 </label>
               </div>
 
-              <div className="relative mb-6" data-te-input-wrapper-init>
+              <div className="relative mb-6">
                 <input
                   {...register("userEmail", { required: true, maxLength: 25 })}
                   type="email"
                   className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                  // id="exampleFormControlInput22"
                   placeholder="Email"
                 />
                 <label
@@ -94,43 +95,47 @@ function SignUp() {
                   Email
                 </label>
               </div>
-              <div className="relative mb-6" data-te-input-wrapper-init>
+              <div className="relative mb-6">
                 <input
                   {...register("userPassword", { required: true })}
                   type="password"
                   className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none
                     [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                  // id="exampleFormControlInput22"
                   placeholder="Password"
                 />
                 <label
-                  // for="exampleFormControlInput22"
                   className="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[2.35rem] peer-focus:scale-[1] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none"
                 >
                   Password
                 </label>
               </div>
-              <div className="relative mb-6" data-te-input-wrapper-init>
+              <div className="relative mb-6">
                 <input
                   {...register("phoneNum", {})}
                   type="tel"
                   className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                  // id="exampleFormControlInput22"
                   placeholder="Phone Number"
                 />
-                <label
-                  // for="exampleFormControlInput22"
-                  className="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[2.35rem] peer-focus:scale-[1] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none "
-                >
+                <label className="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[2.35rem] peer-focus:scale-[1] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none ">
                   Phone Number
                 </label>
               </div>
-              <div className="relative mb-6" data-te-input-wrapper-init>
+              <div className="relative mb-6">
+                <input
+                  {...register("profilePic", {})}
+                  type="file"
+                  className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+                  placeholder=""
+                />
+                <label className="pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[2.35rem] peer-focus:scale-[1] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none ">
+                  Profile Photo
+                </label>
+              </div>
+              <div className="relative mb-6">
                 <select
                   {...register("userCity")}
                   type="text"
                   className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none  [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0 text-neutral-500 h-11"
-                  // id="exampleFormControlInput22"
                 >
                   <option value="Indore">Indore</option>
                   <option value="Indore">Lucknow</option>
@@ -139,12 +144,11 @@ function SignUp() {
                   <option value="Indore">Dehli</option>
                 </select>
               </div>
-              <div className="relative mb-6" data-te-input-wrapper-init>
+              <div className="relative mb-6">
                 <select
                   {...register("userState")}
                   type="text"
                   className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0 text-neutral-500 h-11"
-                  // id="exampleFormControlInput22"
                 >
                   <option className="" value="Madhya Pradesh">
                     Madhya Pradesh
@@ -163,7 +167,7 @@ function SignUp() {
               <div className="text-center">
                 <button
                   type="submit"
-                  className="p-2 px-8 rounded-md text-white font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-purple-500 hover:to-pink-500"
+                  className="p-2 px-8 rounded-md text-white font-semibold bg-gradient-to-tl from-indigo-600 via-purple-600 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                 >
                   Sign Up
                 </button>

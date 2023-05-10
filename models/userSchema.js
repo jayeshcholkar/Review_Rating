@@ -26,10 +26,10 @@ const userSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    //  profilePic :{
-    //     type : String,
-    //     required : true,
-    // },
+     profilePic :{
+        type : String,
+        // required : true,
+    },
     role : {
       type : String,
       default : true
