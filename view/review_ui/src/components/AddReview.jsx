@@ -16,7 +16,7 @@ function AddReview({ open, setOpen, detailApiCall }) {
   } = useForm();
   const onSubmit = async (data) => {
     await axios
-      .post(`http://localhost:9000/addreview/${id}`, data, {
+      .post(`http://localhost:9000/review/create/${id}`, data, {
         headers: {
           Authorization: `Bearer ${token}`, //the token is a variable which holds the token
         },

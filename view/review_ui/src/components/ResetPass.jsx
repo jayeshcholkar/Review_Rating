@@ -17,7 +17,7 @@ function resetPass() {
   } = useForm();
   const onSubmit = (data) => {
     axios
-      .post(`http://localhost:9000/resetpassword/${id}/${token}`, data)
+      .post(`http://localhost:9000/user/resetpassword/${id}/${token}`, data)
       .then((response) => {
         console.log(response)
         setUser(response.data.success);

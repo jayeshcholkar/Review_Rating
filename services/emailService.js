@@ -1,23 +1,24 @@
-const nodemailer = require('nodemailer')
-require('dotenv').config()
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
-const sender = process.env.EMAIL
-const password = process.env.PASSWORD
+const sender = process.env.EMAIL;
+const password = process.env.PASSWORD;
 
-const sendEmail = (email, token, userId) => {  // Email and token get by callback in userController
-   var transpoter = nodemailer.createTransport({
-    service : "gmail",
-    auth : {
-        user : sender,
-        pass : password
-    }
-   })
+const sendEmail = (email, token, userId) => {
+  // Email and token get by callback in userController
+  var transpoter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: sender,
+      pass: password,
+    },
+  });
 
-   var mailOptions = {
-    from : sender,
-    to : email,
-    subject : "Password reset",
-    html : `
+  var mailOptions = {
+    from: sender,
+    to: email,
+    subject: "Password reset",
+    html: `
     <!DOCTYPE html>
 <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
@@ -341,22 +342,22 @@ const sendEmail = (email, token, userId) => {  // Email and token get by callbac
 </table><!-- End -->
 </body>
 </html>
-    `
-   }
+    `,
+  };
 
-   transpoter.sendMail(mailOptions , (error, info) => {
-    if(error){
-        res.status(424).json({
-            success : false,
-            message : `Error occurt ${error.message}`  
-        })
+  transpoter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      res.status(424).json({
+        success: false,
+        message: `Error occurt ${error.message}`,
+      });
     } else {
-        res.status(200).json({
-            success : true,
-            message : `Email send successfully ${info.response}`
-        })
+      res.status(200).json({
+        success: true,
+        message: `Email send successfully ${info.response}`,
+      });
     }
-   })
-}
+  });
+};
 
-module.exports = { sendEmail }
+module.exports = { sendEmail };

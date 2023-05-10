@@ -15,7 +15,7 @@ function forgetPass({ open, setOpen }) {
   } = useForm();
   const onSubmit = async (data) => {
     await axios
-      .post(`http://localhost:9000/forgotpassword`, data)
+      .post(`http://localhost:9000/user/forgotpassword`, data)
       .then((response) => {
         console.log(response.data.success);
         setAlert(response.data.success);

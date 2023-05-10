@@ -1,31 +1,30 @@
 const userSchema = require("../models/userSchema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require('dotenv').config()
-const couldinary = require("../middleware/couldinary");
-const mail = require('../services/emailService')
+require("dotenv").config();
+const couldinary = require("../services/couldinary");
+const mail = require("../services/emailService");
+const { unlinkSync } = require("fs");
 
 const signUp = async (req, res) => {
   const registerData = new userSchema(req.body);
-  console.log(registerData);
   try {
     const isUserExists = await userSchema.findOne({
       userEmail: req.body.userEmail,
     });
     if (isUserExists) {
+      req.file ? unlinkSync(req.file.path) : null // Delete multer unnecessary uploaded photo
       res.status(409).json({
         success: false,
         message: "User is already existed with this email",
       });
     } else {
-      if (req.file !== undefined){
-      const result = await couldinary.uploader.upload(req.file.path , {
-        public_id: `${registerData._id}_${Date.now()}_ProfilePIC`,
-      });
-      // console.log(result);
-      registerData.profilePic = result.url;
-    }
-      // const salt = await bcrypt.genSalt(10);
+      if (req.file !== undefined) {
+        const result = await couldinary.uploader.upload(req.file.path, {
+          public_id: `${registerData._id}_${Date.now()}_ProfilePIC`,
+        });
+        registerData.profilePic = result.url;
+      }
       registerData.userPassword = await bcrypt.hash(req.body.userPassword, 10);
       const user = await registerData.save();
       res.status(201).json({
@@ -37,7 +36,7 @@ const signUp = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       success: false,
-      Error: "Error occur " + error.message,
+      Error: `Error occur ${error.stack}`,
     });
   }
 };
@@ -46,7 +45,6 @@ const logIn = async (req, res) => {
   const user = await userSchema.findOne({
     userEmail: req.body.userEmail,
   });
-  // console.log(user.userPassword)
   if (user) {
     const hashPassword = await bcrypt.compare(
       req.body.userPassword,
@@ -76,7 +74,7 @@ const logIn = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-  const { userEmail } = req.body
+  const { userEmail } = req.body;
   try {
     const isUserExist = await userSchema.findOne({
       userEmail: userEmail,
@@ -84,16 +82,16 @@ const forgotPassword = async (req, res) => {
     if (isUserExist) {
       const secret = isUserExist.userPassword + process.env.ACCESS_TOKEN;
       const token = jwt.sign(
-        { userEmail: isUserExist.userEmail, _id : isUserExist._id },
+        { userEmail: isUserExist.userEmail, _id: isUserExist._id },
         secret,
         { expiresIn: "5m" }
       );
-      mail.sendEmail(userEmail, token, isUserExist._id)
+      mail.sendEmail(userEmail, token, isUserExist._id);
       res.status(200).json({
         success: true,
         message: "Email send sucessfully",
-        token : token,
-        userId : isUserExist._id
+        token: token,
+        userId: isUserExist._id,
       });
     } else {
       res.status(401).json({
@@ -102,7 +100,7 @@ const forgotPassword = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(404).json({
+    res.status(500).json({
       success: false,
       message: `Error occur ${error.message}`,
     });
@@ -110,45 +108,45 @@ const forgotPassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  const { newPassword, confirmPassword } = req.body
-  const { id, token } = req.params
+  const { newPassword, confirmPassword } = req.body;
+  const { id, token } = req.params;
   try {
-    const isUserExist = await userSchema.findById({_id : id})
+    const isUserExist = await userSchema.findById({ _id: id });
     const secret = isUserExist.userPassword + process.env.ACCESS_TOKEN;
-    jwt.verify(token, secret)
-  if( newPassword && confirmPassword ) {
-    if(newPassword !== confirmPassword){
-     res.status(400).json({
-      success : false,
-      message : 'New password and confirm password are not same'
-     })
+    jwt.verify(token, secret);
+    if (newPassword && confirmPassword) {
+      if (newPassword !== confirmPassword) {
+        res.status(400).json({
+          success: false,
+          message: "New password and confirm password are not same",
+        });
+      } else {
+        const hashPassword = await bcrypt.hash(confirmPassword, 10);
+        await userSchema.findByIdAndUpdate(isUserExist._id, {
+          $set: { userPassword: hashPassword },
+        });
+        res.status(201).json({
+          success: true,
+          message: "Password reset successfully",
+        });
+      }
     } else {
-      const hashPassword = await bcrypt.hash(confirmPassword, 10)
-      await userSchema.findByIdAndUpdate(isUserExist._id, {
-         $set : { userPassword : hashPassword },
-      })
-      res.status(201).json({
-        success : true,
-        message : "Password reset successfully"
-      })
+      res.status(403).json({
+        success: false,
+        message: "All fields are required",
+      });
     }
-  } else {
-    res.status(403).json({
-      success : false,
-      message : "All fields are required"
-    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: `Error occur ${error.message}`,
+    });
   }
-} catch (error) {
-  res.status(400).json({
-    success : false,
-    message : `Error occur ${error.message}`
-  })
-}
-}
+};
 
 module.exports = {
   signUp,
   logIn,
   forgotPassword,
-  resetPassword
+  resetPassword,
 };

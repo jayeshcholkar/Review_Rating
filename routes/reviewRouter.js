@@ -1,8 +1,11 @@
-const reviewRouter = require('express').Router()
-const review = require('../controllers/reviewController')
+const reviewRouter = require("express").Router();
+const review = require("../controllers/reviewController");
+const validate = require("../validator/reviewValidate/reviewValidation");
 
-reviewRouter.post('/addreview/:cid', review.addReview)
-reviewRouter.get('/reviewdetail/:id', review.reviewDetails)
-reviewRouter.get('/reviews', review.allReview)
+reviewRouter.get("/list", review.reviewList);
+reviewRouter.get("/detail/:id", review.reviewDetails);
+reviewRouter.patch("/update/:id", review.updateReview);
+reviewRouter.delete("/delete/:id", review.deleteReview);
+reviewRouter.post("/create/:cid", validate.validateReview, review.createReview);
 
-module.exports = reviewRouter
+module.exports = reviewRouter;

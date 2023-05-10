@@ -18,7 +18,7 @@ function UserLogin() {
   } = useForm();
   const onSubmit = (data) => {
     axios
-      .post("http://localhost:9000/login", data)
+      .post("http://localhost:9000/user/login", data)
       .then((response) => {
         localStorage.setItem("user", response.data.token);
         setUser(response.data.success);
@@ -66,7 +66,7 @@ function UserLogin() {
               <p className="text-red-600 ">{userError}</p>
               <div className="relative mb-6  mt-10" data-te-input-wrapper-init>
                 <input
-                  {...register("userEmail", { required: true, maxLength: 25 })}
+                  {...register("userEmail", { required: true, maxLength: 40 })}
                   type="text"
                   className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none  [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                   placeholder="Email address"

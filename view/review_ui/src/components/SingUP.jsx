@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ function SignUp() {
     formData.append("userState", data.userState);
     formData.append("userName", data.userName);
     axios
-      .post("http://localhost:9000/signup", formData)
+      .post("http://localhost:9000/user/signup", formData)
       .then((response) => {
         console.log(response.data);
         setUser(response.data.success);
@@ -40,7 +40,7 @@ function SignUp() {
   console.log(errors);
 
   return (
-    <div className="max-sm:h-[170vh] h-[140vh] bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500">
+    <div className="max-sm:h-[170vh] h-[150vh] bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500">
       <section className="h-screen">
         <div className="g-6 flex h-full flex-wrap items-center justify-center lg:justify-between mx-10">
           <div className="shrink-1 mb-12 grow-0 basis-auto md:mb-0 md:w-9/12 md:shrink-0 lg:w-6/12 xl:w-6/12">
@@ -83,7 +83,7 @@ function SignUp() {
 
               <div className="relative mb-6">
                 <input
-                  {...register("userEmail", { required: true, maxLength: 25 })}
+                  {...register("userEmail", { required: true, maxLength: 40 })}
                   type="email"
                   className="peer block min-h-[auto] w-full rounded border border-gray-400 bg-transparent py-[0.32rem] px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                   placeholder="Email"
@@ -174,12 +174,13 @@ function SignUp() {
                 <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300"></div>
                 <p className="mt-2 mb-0 pt-1 text-sm font-semibold">
                   Already have an account ?
-                  <a
-                    href="/"
+                  <Link to={'/'}>
+                  <button
                     className="ml-1 text-[16px] underline text-blue-700 transition duration-150 ease-in-out hover:text-indigo-600 focus:text-pink-600 active:text-blue-700"
                   >
                     Login
-                  </a>
+                  </button>
+                  </Link>
                 </p>
               </div>
             </form>

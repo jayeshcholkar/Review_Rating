@@ -20,7 +20,7 @@ function AddCompany({ open, setOpen, listApiCall }) {
     formData.append("companyCity", data.companyCity);
     formData.append("foundedOn", data.foundedOn);
     await axios
-      .post("http://localhost:9000/addcompany", formData, {
+      .post("http://localhost:9000/company/create", formData, {
         headers: {
           Authorization: `Bearer ${token}`, //the token is a variable which holds the token
         },

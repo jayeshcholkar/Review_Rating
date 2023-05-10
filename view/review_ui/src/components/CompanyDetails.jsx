@@ -20,7 +20,7 @@ function CompanyDetails() {
 
   const detailApiCall = async () => {
     await axios
-      .get(`http://localhost:9000/reviewdetail/${company.id}`, {
+      .get(`http://localhost:9000/company/details/${company.id}`, {
         headers: {
           Authorization: `Bearer ${token}`, //the token is a variable which holds the token
         },

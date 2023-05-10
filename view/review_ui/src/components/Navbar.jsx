@@ -60,9 +60,9 @@ function Navbar() {
          {
           dropDown ? 
         <div className="bg-white p-4 absolute max-sm:-ml-20 max-sm:mt-56 ml-48 mt-48 shadow-lg flex flex-col items-center justify-center gap-3 rounded-md">
-          <button className="hover:bg-indigo-500 hover:text-white p-1 px-6 rounded-md uppercase border-b border-gray-500">{userName} ➞</button>
-          <button className="hover:bg-indigo-500 hover:text-white p-1 px-6 rounded-md">Support</button>
-          <button onClick={logOut} className="hover:bg-indigo-500 hover:text-white p-1 px-6 rounded-md">Sign Out</button>
+          <button className="hover:bg-purple-500 hover:text-white p-1 px-6 rounded-md uppercase border-b border-gray-500">{userName} ➞</button>
+          <button className="hover:bg-purple-500 hover:text-white p-1 px-6 rounded-md">Support</button>
+          <button onClick={logOut} className="hover:bg-purple-500 hover:text-white p-1 px-6 rounded-md">Sign Out</button>
         </div>
         : null }
       </div>
