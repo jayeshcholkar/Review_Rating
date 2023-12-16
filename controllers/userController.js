@@ -1,10 +1,10 @@
-const userSchema = require("../models/userSchema");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
 const couldinary = require("../services/couldinary");
+const userSchema = require("../models/userSchema");
 const mail = require("../services/emailService");
 const { unlinkSync } = require("fs");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 const signUp = async (req, res) => {
   const registerData = new userSchema(req.body);
