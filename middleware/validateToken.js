@@ -19,7 +19,7 @@ const validateToken = async (req, res, next) => {
   } else {
     res.status(500).json({
       success: false,
-      message: "token is not found",
+      message: "Token is not found",
     });
   }
 };

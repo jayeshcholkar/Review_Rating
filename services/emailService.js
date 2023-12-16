@@ -347,16 +347,10 @@ const sendEmail = (email, token, userId) => {
 
   transpoter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      res.status(424).json({
-        success: false,
-        message: `Error occurt ${error.message}`,
-      });
-    } else {
-      res.status(200).json({
-        success: true,
-        message: `Email send successfully ${info.response}`,
-      });
-    }
+		console.log(`Error occur ${error.message}`);
+	  } else {
+		console.log(`Email sent ${info.response}`);
+	  }
   });
 };
 
